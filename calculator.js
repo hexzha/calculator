@@ -122,37 +122,56 @@ createButtons();
 
 // CLICK EVENT
 input_element.addEventListener("click", event => {
-	const target_btn = event.target;
+    const target_btn = event.target;
 
-	calculator_buttons.forEach( button => {
-		if(button.name == target_btn.id) calculator(button);
-	})
+    calculator_buttons.forEach(button => {
+        if (button.name == target_btn.id) calculator(button);
+    })
 })
 
 // CALCULATOR DATA
 let data = {
-	operation : []
-	result : []
+    operation: [],
+    result: []
 }
 
 // CALCULATOR
-function calculator(button){
-	if(button.type =="operator"){
-		data.operation.push(button.symbol);
-		data.result.push(button.formula);
-	} else if(button.type == "number") {
-		data.operation.push(button.symbol);
-		data.result.push(button.formula);
-	} else if(button.type == "key") {
-		if(button.name == "clear") {
-			data.operation = [];
-			updateOutputResult(0);
-		} else if( button.name == "delete") {
-			data.operation.pop();
-			data.result.pop();
-		}
-	} else if(button.type == "calculate"){
-		
-	}
-	updateOutputOperation(data.operation.join(''));
+function calculator(button) {
+    if (button.type == "operator") {
+        data.operation.push(button.symbol);
+        data.result.push(button.formula);
+    } else if (button.type == "number") {
+        data.operation.push(button.symbol);
+        data.result.push(button.formula);
+    } else if (button.type == "key") {
+        if (button.name == "clear") {
+            data.operation = [];
+            updateOutputResult(0);
+        } else if (button.name == "delete") {
+            data.operation.pop();
+            data.result.pop();
+        }
+    } else if (button.type == "calculate") {
+        let join_result = data.result.join('');
+        let result = eval(join_result);
+
+        updateOutputResult(result);
+
+        data.operation = [];
+        data.result = [];
+
+        data.operation.push(result);
+        data.result.push(result);
+
+        return;
+    }
+    updateOutputOperation(data.operation.join(''));
+}
+
+function updateOutputOperation(operation) {
+    output_operation_element.innerHTML = operation;
+}
+
+function updateOutputResult(result) {
+    output_result_element.innerHTML = result;
 }
