@@ -146,6 +146,7 @@ function calculator(button) {
     } else if (button.type == "key") {
         if (button.name == "clear") {
             data.operation = [];
+            data.result = [];
             updateOutputResult(0);
         } else if (button.name == "delete") {
             data.operation.pop();
@@ -153,15 +154,31 @@ function calculator(button) {
         }
     } else if (button.type == "calculate") {
         let join_result = data.result.join('');
-        let result = eval(join_result);
 
-        updateOutputResult(result);
+        let result;
+
+        try {
+            result = eval(join_result);
+        } catch (error) {
+            if (error instanceof SyntaxError) {
+                result = "Syntax Error";
+                data.operation = [];
+                data.result = [];
+                updateOutputResult(result);
+
+                return;
+            }
+        }
 
         data.operation = [];
         data.result = [];
 
+        result = formatResult(result);
+
         data.operation.push(result);
         data.result.push(result);
+
+        updateOutputResult(result);
 
         return;
     }
@@ -174,4 +191,39 @@ function updateOutputOperation(operation) {
 
 function updateOutputResult(result) {
     output_result_element.innerHTML = result;
+}
+
+// FORMAT RESULT
+function formatResult(result) {
+    const max_output_number_length = 10;
+    const output_precision = 5;
+
+    if (digitCounter(result) > max_output_number_length) {
+        if (isFloat(result)) {
+            const result_int = parseInt(result);
+            const result_int_length = digitCounter(result_int);
+
+            if (result_int_length > max_output_number_length) {
+                return result.toPrecision(output_precision);
+            } else {
+                const num_digits_after_point = max_output_number_length - result_int_length;
+                return result.toFixed(num_digits_after_point);
+            }
+        } else {
+            // NUMBER IS AN INTEGER
+            return result.toPrecision(output_precision);
+        }
+    } else {
+        return result;
+    }
+}
+
+// DIGIT COUNTER
+function digitCounter(number) {
+    return number.toString().length;
+}
+
+// CHECK IF NUMBER IS A FLOAT
+function isFloat(number) {
+    return number % 1 != 0;
 }
