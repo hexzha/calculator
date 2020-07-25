@@ -155,6 +155,10 @@ function calculator(button) {
     } else if (button.type == "calculate") {
         let join_result = data.result.join('');
 
+        if (join_result == '') {
+            return;
+        }
+
         let result;
 
         try {
