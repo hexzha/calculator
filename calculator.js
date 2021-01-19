@@ -222,7 +222,7 @@ function formatResult(result) {
     }
 }
 
-// DIGIT COUNTER
+// COUNT LENGTH OF DIGITS
 function digitCounter(number) {
     return number.toString().length;
 }
